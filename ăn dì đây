@@ -15,7 +15,6 @@
       background: linear-gradient(135deg, #ffeb3b, #4caf50);
       font-family: Arial, sans-serif;
     }
-    /* Popup */
     #popup {
       position: fixed;
       top: 0; left: 0; right: 0; bottom: 0;
@@ -32,6 +31,7 @@
       text-align: center;
       box-shadow: 0 5px 15px rgba(0,0,0,0.2);
       max-width: 300px;
+      animation: pop 0.5s ease;
     }
     #popup h2 {
       margin-bottom: 20px;
@@ -51,48 +51,129 @@
     .option1 { background: #2196f3; color: white; }
     .option2 { background: #9c27b0; color: white; }
     .option3 { background: #ff5722; color: white; }
-    .option1:hover, .option2:hover, .option3:hover {
-      opacity: 0.85;
+    button:hover { opacity: 0.85; }
+
+    /* Music control */
+    #musicBtn {
+      position: fixed;
+      top: 15px;
+      right: 15px;
+      background: #000;
+      color: #fff;
+      border: none;
+      padding: 10px 15px;
+      border-radius: 8px;
+      cursor: pointer;
+      z-index: 2000;
     }
-    /* Emoji rơi */
-    .emoji {
-      position: absolute;
-      font-size: 24px;
-      animation: fall 5s linear infinite;
+
+    @keyframes pop {
+      0% { transform: scale(0.7); opacity: 0; }
+      100% { transform: scale(1); opacity: 1; }
+    }
+
+    /* Confetti */
+    .confetti {
+      position: fixed;
+      width: 10px;
+      height: 10px;
+      background-color: red;
+      top: -10px;
+      animation: fall linear forwards;
     }
     @keyframes fall {
-      0% { transform: translateY(-50px); opacity: 1; }
-      100% { transform: translateY(100vh); opacity: 0; }
+      to { transform: translateY(100vh) rotate(720deg); }
+    }
+
+    /* Shake screen */
+    @keyframes shake {
+      0%, 100% { transform: translateX(0); }
+      20% { transform: translateX(-10px); }
+      40% { transform: translateX(10px); }
+      60% { transform: translateX(-10px); }
+      80% { transform: translateX(10px); }
+    }
+
+    /* Message text */
+    #message {
+      position: fixed;
+      top: 10%;
+      width: 100%;
+      text-align: center;
+      font-size: 2em;
+      font-weight: bold;
+      color: #fff;
+      text-shadow: 2px 2px 5px #000;
+      animation: bounce 1s infinite;
+    }
+    @keyframes bounce {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-20px); }
     }
   </style>
 </head>
 <body>
+  <button id="musicBtn" onclick="toggleMusic()">🔊 Bật / Tắt nhạc</button>
+
   <div id="popup">
     <div id="popup-box">
       <h2>Nhi chan ơi, cuối tuần này mình ăn gì bây giờ?</h2>
-      <button class="option1" onclick="choose('Đi ăn đồ Hàn quán cũ 🍲')">🍲 Đi ăn đồ Hàn quán cũ</button>
-      <button class="option2" onclick="choose('Đi ăn gì cũng được 🤷')">🤷 Đi ăn gì cũng được</button>
-      <button class="option3" onclick="choose('Đi ăn đồ Hàn quán mới 🍜')">🍜 Đi ăn đồ Hàn quán mới</button>
+      <button class="option1" onclick="choose('🍲 Đi ăn đồ Hàn quán cũ')">🍲 Đi ăn đồ Hàn quán cũ</button>
+      <button class="option2" onclick="choose('🤷 Đi ăn gì cũng được')">🤷 Đi ăn gì cũng được</button>
+      <button class="option3" onclick="choose('🍜 Đi ăn đồ Hàn quán mới')">🍜 Đi ăn đồ Hàn quán mới</button>
     </div>
   </div>
 
+  <div id="message"></div>
+
+  <audio id="bgMusic" loop>
+    <source src="https://files.catbox.moe/fk1a1k.mp3" type="audio/mpeg">
+  </audio>
+
   <script>
-    function choose(option) {
-      alert("Nhi chan đã chọn: " + option);
+    const music = document.getElementById("bgMusic");
+    let isPlaying = false;
+
+    function toggleMusic() {
+      if (isPlaying) {
+        music.pause();
+      } else {
+        music.play();
+      }
+      isPlaying = !isPlaying;
     }
 
-    // Emoji rơi
+    function choose(option) {
+      const msg = document.getElementById("message");
+      msg.innerText = "Nhi chan chọn: " + option;
+
+      document.body.style.animation = "shake 0.5s";
+      setTimeout(() => document.body.style.animation = "", 500);
+
+      for (let i = 0; i < 50; i++) {
+        const confetti = document.createElement("div");
+        confetti.className = "confetti";
+        confetti.style.left = Math.random() * 100 + "vw";
+        confetti.style.backgroundColor = ["#ffeb3b","#f44336","#4caf50","#2196f3","#9c27b0"][Math.floor(Math.random()*5)];
+        confetti.style.animationDuration = (2 + Math.random() * 3) + "s";
+        document.body.appendChild(confetti);
+        setTimeout(() => confetti.remove(), 4000);
+      }
+    }
+
+    // Emoji rain
     const emojis = ["🍕","🍔","🍣","🍜","🥗","🌮"];
     function createEmoji() {
       const emoji = document.createElement("div");
-      emoji.className = "emoji";
+      emoji.style.position = "absolute";
+      emoji.style.fontSize = "24px";
       emoji.innerText = emojis[Math.floor(Math.random() * emojis.length)];
       emoji.style.left = Math.random() * 100 + "vw";
-      emoji.style.animationDuration = (3 + Math.random() * 5) + "s";
+      emoji.style.animation = "fall 5s linear";
       document.body.appendChild(emoji);
       setTimeout(() => emoji.remove(), 5000);
     }
-    setInterval(createEmoji, 500);
+    setInterval(createEmoji, 700);
   </script>
 </body>
 </html>
