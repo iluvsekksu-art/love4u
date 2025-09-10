@@ -1,80 +1,186 @@
 <!DOCTYPE html>
-<script>
-function showLove(){
-alert("Anh biết mà ❤️ Của cũng thích anh!");
-startFireworks();
-}
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tặng Của 💖</title>
+  <style>
+    body {
+      margin: 0;
+      overflow: hidden;
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background: linear-gradient(135deg, #ff9a9e, #fad0c4);
+      font-family: Arial, sans-serif;
+    }
+    h1 {
+      font-size: 3em;
+      color: white;
+      text-shadow: 2px 2px 5px rgba(0,0,0,0.3);
+      animation: pulse 2s infinite;
+      text-align: center;
+    }
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.2); }
+    }
+    /* Popup */
+    #popup {
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0,0,0,0.7);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 1000;
+    }
+    #popup-box {
+      background: white;
+      padding: 20px 30px;
+      border-radius: 15px;
+      text-align: center;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+    }
+    #popup h2 {
+      margin-bottom: 20px;
+      color: #ff4d6d;
+    }
+    button {
+      padding: 10px 20px;
+      margin: 10px;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      font-size: 16px;
+      font-weight: bold;
+    }
+    #yes {
+      background: #ff4d6d;
+      color: white;
+    }
+    #no {
+      background: #ddd;
+      position: relative;
+    }
+    /* Trái tim */
+    .heart {
+      position: absolute;
+      color: red;
+      font-size: 24px;
+      animation: fall 5s linear infinite;
+    }
+    @keyframes fall {
+      0% { transform: translateY(-10vh) scale(1); opacity: 1; }
+      100% { transform: translateY(100vh) scale(0.5); opacity: 0; }
+    }
+    /* Canvas pháo hoa */
+    #fireworks {
+      position: fixed;
+      top: 0; left: 0; width: 100%; height: 100%;
+      pointer-events: none;
+    }
+  </style>
+</head>
+<body>
+  <h1>💖 Anh yêu em, Của 💖</h1>
 
+  <!-- Popup -->
+  <div id="popup">
+    <div id="popup-box">
+      <h2>Của ơi, làm người yêu anh nhé? 💘</h2>
+      <button id="yes">Yes 💕</button>
+      <button id="no">No 😝</button>
+    </div>
+  </div>
 
-// Fireworks effect
-const canvas = document.querySelector('.fireworks');
-const ctx = canvas.getContext('2d');
-let particles = [];
-canvas.width = window.innerWidth;
-canvas.height = window.innerHeight;
+  <canvas id="fireworks"></canvas>
 
+  <script>
+    // Tạo trái tim rơi
+    function createHeart() {
+      const heart = document.createElement("div");
+      heart.classList.add("heart");
+      heart.innerHTML = "❤";
+      heart.style.left = Math.random() * 100 + "vw";
+      heart.style.fontSize = Math.random() * 20 + 15 + "px";
+      document.body.appendChild(heart);
+      setTimeout(() => heart.remove(), 5000);
+    }
+    setInterval(createHeart, 300);
 
-function random(min, max) {
-return Math.random() * (max - min) + min;
-}
+    // Nút Yes/No
+    const yesBtn = document.getElementById("yes");
+    const noBtn = document.getElementById("no");
+    const popup = document.getElementById("popup");
 
+    yesBtn.addEventListener("click", () => {
+      popup.style.display = "none";
+      launchFireworks();
+    });
 
-function createParticle(x, y) {
-const angle = random(0, 2 * Math.PI);
-const speed = random(2, 7);
-return {
-x,
-y,
-vx: Math.cos(angle) * speed,
-vy: Math.sin(angle) * speed,
-life: 100,
-color: `hsl(${random(0, 360)}, 100%, 50%)`
-};
-}
+    noBtn.addEventListener("mouseover", () => {
+      noBtn.style.position = "absolute";
+      noBtn.style.top = Math.random() * 80 + "%";
+      noBtn.style.left = Math.random() * 80 + "%";
+    });
 
+    // Pháo hoa
+    const canvas = document.getElementById("fireworks");
+    const ctx = canvas.getContext("2d");
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
 
-function startFireworks() {
-setInterval(() => {
-const x = random(100, canvas.width - 100);
-const y = random(50, canvas.height / 2);
-for (let i = 0; i < 50; i++) {
-particles.push(createParticle(x, y));
-}
-}, 600);
+    class Firework {
+      constructor(x, y, color) {
+        this.x = x;
+        this.y = y;
+        this.color = color;
+        this.radius = Math.random() * 2 + 2;
+        this.dx = (Math.random() - 0.5) * 6;
+        this.dy = (Math.random() - 0.5) * 6;
+        this.alpha = 1;
+      }
+      update() {
+        this.x += this.dx;
+        this.y += this.dy;
+        this.alpha -= 0.01;
+      }
+      draw() {
+        ctx.globalAlpha = this.alpha;
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+        ctx.fillStyle = this.color;
+        ctx.fill();
+      }
+    }
 
+    let fireworks = [];
+    function launchFireworks() {
+      const colors = ["#ff4d6d", "#ff9a9e", "#fad0c4", "#fcb045", "#833ab4"];
+      for (let i = 0; i < 50; i++) {
+        fireworks.push(
+          new Firework(canvas.width/2, canvas.height/2, colors[Math.floor(Math.random()*colors.length)])
+        );
+      }
+    }
 
-animate();
-}
+    function animate() {
+      requestAnimationFrame(animate);
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      fireworks.forEach((fw, i) => {
+        fw.update();
+        fw.draw();
+        if (fw.alpha <= 0) fireworks.splice(i, 1);
+      });
+    }
+    animate();
 
-
-function animate() {
-ctx.clearRect(0, 0, canvas.width, canvas.height);
-particles.forEach((p, i) => {
-p.x += p.vx;
-p.y += p.vy;
-p.vy += 0.05;
-p.life--;
-if (p.life <= 0) particles.splice(i, 1);
-ctx.fillStyle = p.color;
-ctx.beginPath();
-ctx.arc(p.x, p.y, 3, 0, Math.PI * 2);
-ctx.fill();
-});
-requestAnimationFrame(animate);
-}
-
-
-// Falling hearts effect
-function createHeart(){
-const heart = document.createElement('div');
-heart.classList.add('falling-heart');
-heart.innerHTML = '❤';
-heart.style.left = Math.random() * window.innerWidth + 'px';
-heart.style.animationDuration = (Math.random() * 3 + 2) + 's';
-document.body.appendChild(heart);
-setTimeout(() => heart.remove(), 5000);
-}
-setInterval(createHeart, 500);
-</script>
+    window.addEventListener("resize", () => {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    });
+  </script>
 </body>
 </html>
