@@ -3,19 +3,19 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Ăn cái dì âyyy fen</title>
+  <title>Ăn cái dì âyyy fen 🍴</title>
   <style>
     body {
       margin: 0;
-      overflow: hidden;
       height: 100vh;
       display: flex;
       justify-content: center;
       align-items: center;
       font-family: Arial, sans-serif;
+      overflow: hidden;
       background: linear-gradient(270deg, #ff512f, #dd2476, #4facfe, #00f2fe);
       background-size: 800% 800%;
-      animation: gradientBG 20s ease infinite;
+      animation: gradientBG 15s ease infinite;
     }
 
     @keyframes gradientBG {
@@ -25,42 +25,42 @@
     }
 
     #popup {
-      position: fixed;
-      top: 0; left: 0; right: 0; bottom: 0;
-      background: rgba(0,0,0,0.5);
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      z-index: 1000;
-    }
-    #popup-box {
-      background: white;
-      padding: 25px 35px;
-      border-radius: 16px;
+      position: relative;
+      background: rgba(255,255,255,0.9);
+      padding: 30px 40px;
+      border-radius: 20px;
       text-align: center;
       box-shadow: 0 10px 25px rgba(0,0,0,0.3);
-      max-width: 320px;
-      animation: pop 0.5s ease;
+      animation: pop 0.6s ease;
     }
+
     #popup h2 {
-      margin-bottom: 20px;
+      margin-bottom: 25px;
       color: #222;
+      font-size: 20px;
     }
+
+    .options {
+      display: flex;
+      gap: 20px;
+      justify-content: center;
+    }
+
     button {
-      display: block;
-      width: 100%;
+      flex: 1;
+      min-width: 150px;
       padding: 14px;
-      margin: 10px 0;
       border: none;
-      border-radius: 8px;
+      border-radius: 10px;
       cursor: pointer;
       font-size: 16px;
+      color: white;
       transition: 0.3s;
     }
-    .option1 { background: #2196f3; color: white; }
-    .option2 { background: #9c27b0; color: white; }
-    .option3 { background: #ff5722; color: white; }
-    button:hover { transform: scale(1.05); }
+    .option1 { background: #2196f3; }
+    .option2 { background: #9c27b0; }
+    .option3 { background: #ff5722; }
+    button:hover { transform: scale(1.1); }
 
     @keyframes pop {
       0% { transform: scale(0.7); opacity: 0; }
@@ -72,7 +72,6 @@
       position: fixed;
       width: 10px;
       height: 10px;
-      background-color: red;
       top: -10px;
       animation: fall linear forwards;
     }
@@ -80,7 +79,7 @@
       to { transform: translateY(100vh) rotate(720deg); }
     }
 
-    /* Shake screen */
+    /* Shake */
     @keyframes shake {
       0%, 100% { transform: translateX(0); }
       20% { transform: translateX(-15px); }
@@ -89,10 +88,10 @@
       80% { transform: translateX(15px); }
     }
 
-    /* Message text */
+    /* Message */
     #message {
       position: fixed;
-      top: 10%;
+      bottom: 10%;
       width: 100%;
       text-align: center;
       font-size: 2em;
@@ -106,53 +105,31 @@
       50% { transform: translateY(-20px); }
     }
 
-    /* Music control */
-    #musicBtn {
-      position: fixed;
-      top: 15px;
-      right: 15px;
-      background: #000;
-      color: #fff;
-      border: none;
-      padding: 10px 15px;
-      border-radius: 8px;
-      cursor: pointer;
-      z-index: 2000;
+    /* Emoji rain */
+    .emoji {
+      position: absolute;
+      font-size: 26px;
+      top: -40px;
+      animation: drop 6s linear forwards;
+    }
+    @keyframes drop {
+      to { transform: translateY(110vh); }
     }
   </style>
 </head>
 <body>
-  <button id="musicBtn" onclick="toggleMusic()">🎵 Bật / Tắt nhạc</button>
-
   <div id="popup">
-    <div id="popup-box">
-      <h2>Cuối tuần ăn dì fen, ăn Ngọc Ngân lun hong :))) 😋</h2>
-      <button class="option1" onclick="choose('🍲 Đi ăn đồ Hàn quán cũ')">🍲 Đi ăn đồ Hàn quán cũ</button>
-      <button class="option2" onclick="choose('🤷 Đi ăn gì cũng được')">🤷 Đi ăn gì cũng được</button>
-      <button class="option3" onclick="choose('🍜 Đi ăn đồ Hàn quán mới')">🍜 Đi ăn đồ Hàn quán mới</button>
+    <h2>Cuối tuần này fen ăn cái dì âyyy, ăn Ngọc Ngân lun hong :))) 🤔</h2>
+    <div class="options">
+      <button class="option1" onclick="choose('🍲 Đi ăn đồ Hàn quán cũ')">🍲 Hàn quán cũ</button>
+      <button class="option2" onclick="choose('🤷 Đi ăn gì cũng được')">🤷 Tuỳ fen</button>
+      <button class="option3" onclick="choose('🍜 Đi ăn đồ Hàn quán mới')">🍜 Hàn quán mới</button>
     </div>
   </div>
 
   <div id="message"></div>
 
-  <!-- Nhạc nền free -->
-  <audio id="bgMusic" loop>
-    <source src="https://cdn.pixabay.com/download/audio/2022/10/18/audio_c10b2b2f8d.mp3" type="audio/mpeg">
-  </audio>
-
   <script>
-    const music = document.getElementById("bgMusic");
-    let isPlaying = false;
-
-    function toggleMusic() {
-      if (isPlaying) {
-        music.pause();
-      } else {
-        music.play();
-      }
-      isPlaying = !isPlaying;
-    }
-
     function choose(option) {
       const msg = document.getElementById("message");
       msg.innerText = "Nhi chan chọn: " + option;
@@ -160,7 +137,7 @@
       document.body.style.animation = "shake 0.6s";
       setTimeout(() => document.body.style.animation = "", 600);
 
-      for (let i = 0; i < 60; i++) {
+      for (let i = 0; i < 50; i++) {
         const confetti = document.createElement("div");
         confetti.className = "confetti";
         confetti.style.left = Math.random() * 100 + "vw";
@@ -175,13 +152,13 @@
     const emojis = ["🍕","🍔","🍣","🍜","🥗","🌮","🍩","🍟","🍗","🥟"];
     function createEmoji() {
       const emoji = document.createElement("div");
-      emoji.style.position = "absolute";
-      emoji.style.fontSize = "26px";
+      emoji.className = "emoji";
       emoji.innerText = emojis[Math.floor(Math.random() * emojis.length)];
       emoji.style.left = Math.random() * 100 + "vw";
-      emoji.style.animation = "fall 6s linear";
+      emoji.style.fontSize = (20 + Math.random() * 20) + "px";
+      emoji.style.animationDuration = (4 + Math.random() * 3) + "s";
       document.body.appendChild(emoji);
-      setTimeout(() => emoji.remove(), 6000);
+      setTimeout(() => emoji.remove(), 7000);
     }
     setInterval(createEmoji, 500);
   </script>
