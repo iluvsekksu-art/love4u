@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Hỏi Nhi chan 🍴</title>
+  <style>
+    body {
+      margin: 0;
+      overflow: hidden;
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background: linear-gradient(135deg, #ffeb3b, #4caf50);
+      font-family: Arial, sans-serif;
+    }
+    /* Popup */
+    #popup {
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0,0,0,0.5);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 1000;
+    }
+    #popup-box {
+      background: white;
+      padding: 25px 35px;
+      border-radius: 12px;
+      text-align: center;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+      max-width: 300px;
+    }
+    #popup h2 {
+      margin-bottom: 20px;
+      color: #222;
+    }
+    button {
+      display: block;
+      width: 100%;
+      padding: 12px;
+      margin: 8px 0;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 16px;
+      transition: 0.3s;
+    }
+    .option1 { background: #2196f3; color: white; }
+    .option2 { background: #9c27b0; color: white; }
+    .option3 { background: #ff5722; color: white; }
+    .option1:hover, .option2:hover, .option3:hover {
+      opacity: 0.85;
+    }
+    /* Emoji rơi */
+    .emoji {
+      position: absolute;
+      font-size: 24px;
+      animation: fall 5s linear infinite;
+    }
+    @keyframes fall {
+      0% { transform: translateY(-50px); opacity: 1; }
+      100% { transform: translateY(100vh); opacity: 0; }
+    }
+  </style>
+</head>
+<body>
+  <div id="popup">
+    <div id="popup-box">
+      <h2>Nhi chan ơi, cuối tuần này mình ăn gì bây giờ?</h2>
+      <button class="option1" onclick="choose('Đi ăn đồ Hàn quán cũ 🍲')">🍲 Đi ăn đồ Hàn quán cũ</button>
+      <button class="option2" onclick="choose('Đi ăn gì cũng được 🤷')">🤷 Đi ăn gì cũng được</button>
+      <button class="option3" onclick="choose('Đi ăn đồ Hàn quán mới 🍜')">🍜 Đi ăn đồ Hàn quán mới</button>
+    </div>
+  </div>
+
+  <script>
+    function choose(option) {
+      alert("Nhi chan đã chọn: " + option);
+    }
+
+    // Emoji rơi
+    const emojis = ["🍕","🍔","🍣","🍜","🥗","🌮"];
+    function createEmoji() {
+      const emoji = document.createElement("div");
+      emoji.className = "emoji";
+      emoji.innerText = emojis[Math.floor(Math.random() * emojis.length)];
+      emoji.style.left = Math.random() * 100 + "vw";
+      emoji.style.animationDuration = (3 + Math.random() * 5) + "s";
+      document.body.appendChild(emoji);
+      setTimeout(() => emoji.remove(), 5000);
+    }
+    setInterval(createEmoji, 500);
+  </script>
+</body>
+</html>
