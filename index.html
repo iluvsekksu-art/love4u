@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<script>
+function showLove(){
+alert("Anh biết mà ❤️ Của cũng thích anh!");
+startFireworks();
+}
+
+
+// Fireworks effect
+const canvas = document.querySelector('.fireworks');
+const ctx = canvas.getContext('2d');
+let particles = [];
+canvas.width = window.innerWidth;
+canvas.height = window.innerHeight;
+
+
+function random(min, max) {
+return Math.random() * (max - min) + min;
+}
+
+
+function createParticle(x, y) {
+const angle = random(0, 2 * Math.PI);
+const speed = random(2, 7);
+return {
+x,
+y,
+vx: Math.cos(angle) * speed,
+vy: Math.sin(angle) * speed,
+life: 100,
+color: `hsl(${random(0, 360)}, 100%, 50%)`
+};
+}
+
+
+function startFireworks() {
+setInterval(() => {
+const x = random(100, canvas.width - 100);
+const y = random(50, canvas.height / 2);
+for (let i = 0; i < 50; i++) {
+particles.push(createParticle(x, y));
+}
+}, 600);
+
+
+animate();
+}
+
+
+function animate() {
+ctx.clearRect(0, 0, canvas.width, canvas.height);
+particles.forEach((p, i) => {
+p.x += p.vx;
+p.y += p.vy;
+p.vy += 0.05;
+p.life--;
+if (p.life <= 0) particles.splice(i, 1);
+ctx.fillStyle = p.color;
+ctx.beginPath();
+ctx.arc(p.x, p.y, 3, 0, Math.PI * 2);
+ctx.fill();
+});
+requestAnimationFrame(animate);
+}
+
+
+// Falling hearts effect
+function createHeart(){
+const heart = document.createElement('div');
+heart.classList.add('falling-heart');
+heart.innerHTML = '❤';
+heart.style.left = Math.random() * window.innerWidth + 'px';
+heart.style.animationDuration = (Math.random() * 3 + 2) + 's';
+document.body.appendChild(heart);
+setTimeout(() => heart.remove(), 5000);
+}
+setInterval(createHeart, 500);
+</script>
+</body>
+</html>
