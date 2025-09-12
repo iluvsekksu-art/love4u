@@ -1,166 +1,216 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="vi">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Ăn cái dì âyyy fen 🍴</title>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>POTW Spinner — Pes thủ</title>
   <style>
-    body {
-      margin: 0;
-      height: 100vh;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      font-family: Arial, sans-serif;
-      overflow: hidden;
-      background: linear-gradient(270deg, #ff512f, #dd2476, #4facfe, #00f2fe);
-      background-size: 800% 800%;
-      animation: gradientBG 15s ease infinite;
-    }
+    :root{--bg:#0f172a;--card:#0b1220;--accent:#06b6d4;--glass: rgba(255,255,255,0.04)}
+    *{box-sizing:border-box}
+    body{margin:0;min-height:100vh;display:flex;align-items:center;justify-content:center;background:linear-gradient(180deg,#071024 0%, #071129 60%);font-family:Inter,system-ui,Segoe UI,Roboto,'Helvetica Neue',Arial;overflow:hidden}
+    .wrap{width:920px;max-width:95%;padding:28px;background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));border-radius:14px;box-shadow:0 10px 30px rgba(2,6,23,0.6);color:#e6eef6;position:relative;z-index:2}
+    header{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px}
+    h1{font-size:20px;margin:0}
+    p.lead{margin:6px 0 0;color:#a7c1d6;font-size:13px}
+    .main{display:grid;grid-template-columns:1fr 360px;gap:18px;align-items:start}
+    @media (max-width:880px){.main{grid-template-columns:1fr}}
+    .card{background:var(--card);padding:18px;border-radius:12px;backdrop-filter:blur(6px);box-shadow:inset 0 1px 0 rgba(255,255,255,0.02)}
+    .display{height:210px;display:flex;align-items:center;justify-content:center;border-radius:10px;background:linear-gradient(180deg, rgba(6,182,212,0.06), rgba(6,182,212,0.02));font-weight:700;font-size:34px;position:relative;overflow:hidden}
+    .controls{display:flex;gap:12px;margin-top:14px}
+    button{cursor:pointer;padding:12px 16px;border-radius:10px;border:0;font-weight:700;background:var(--accent);color:#022;box-shadow:0 6px 18px rgba(6,182,212,0.08);transition:transform .14s ease, background .25s}
+    button.secondary{background:transparent;border:1px solid rgba(255,255,255,0.06);color:#dbeafe}
+    button:hover{background:#0fd9f2;color:#021}
+    button:active{transform:translateY(2px)}
+    .list{max-height:300px;overflow:auto;padding:12px;border-radius:8px;background:var(--glass);margin-top:12px}
+    .player{padding:8px 10px;border-radius:8px;margin-bottom:8px;background:linear-gradient(90deg, rgba(255,255,255,0.01), rgba(255,255,255,0.00));display:flex;justify-content:space-between;align-items:center;transition:background .25s}
+    .player:hover{background:rgba(255,255,255,0.06)}
+    .player strong{display:inline-block;min-width:0}
+    .player small{color:#8fbcd3}
+    .footer{font-size:13px;color:#9fb7cc;margin-top:10px}
+    .count{font-weight:800;color:var(--accent)}
 
-    @keyframes gradientBG {
-      0% { background-position: 0% 50%; }
-      50% { background-position: 100% 50%; }
-      100% { background-position: 0% 50%; }
-    }
+    /* Hiệu ứng nền */
+    .particles{position:absolute;top:0;left:0;width:100%;height:100%;overflow:hidden;z-index:1;}
+    .particle{position:absolute;width:6px;height:6px;background:var(--accent);border-radius:50%;opacity:.6;animation:float 8s linear infinite}
+    @keyframes float{0%{transform:translateY(100vh) scale(0.5)}100%{transform:translateY(-10vh) scale(1)}}
 
-    #popup {
-      position: relative;
-      background: rgba(255,255,255,0.9);
-      padding: 30px 40px;
-      border-radius: 20px;
-      text-align: center;
-      box-shadow: 0 10px 25px rgba(0,0,0,0.3);
-      animation: pop 0.6s ease;
-    }
-
-    #popup h2 {
-      margin-bottom: 25px;
-      color: #222;
-      font-size: 20px;
-    }
-
-    .options {
-      display: flex;
-      gap: 20px;
-      justify-content: center;
-    }
-
-    button {
-      flex: 1;
-      min-width: 150px;
-      padding: 14px;
-      border: none;
-      border-radius: 10px;
-      cursor: pointer;
-      font-size: 16px;
-      color: white;
-      transition: 0.3s;
-    }
-    .option1 { background: #2196f3; }
-    .option2 { background: #9c27b0; }
-    .option3 { background: #ff5722; }
-    button:hover { transform: scale(1.1); }
-
-    @keyframes pop {
-      0% { transform: scale(0.7); opacity: 0; }
-      100% { transform: scale(1); opacity: 1; }
-    }
-
-    /* Confetti */
-    .confetti {
-      position: fixed;
-      width: 10px;
-      height: 10px;
-      top: -10px;
-      animation: fall linear forwards;
-    }
-    @keyframes fall {
-      to { transform: translateY(100vh) rotate(720deg); }
-    }
-
-    /* Shake */
-    @keyframes shake {
-      0%, 100% { transform: translateX(0); }
-      20% { transform: translateX(-15px); }
-      40% { transform: translateX(15px); }
-      60% { transform: translateX(-15px); }
-      80% { transform: translateX(15px); }
-    }
-
-    /* Message */
-    #message {
-      position: fixed;
-      bottom: 10%;
-      width: 100%;
-      text-align: center;
-      font-size: 2em;
-      font-weight: bold;
-      color: #fff;
-      text-shadow: 2px 2px 5px #000;
-      animation: bounce 1s infinite;
-    }
-    @keyframes bounce {
-      0%, 100% { transform: translateY(0); }
-      50% { transform: translateY(-20px); }
-    }
-
-    /* Emoji rain */
-    .emoji {
-      position: absolute;
-      font-size: 26px;
-      top: -40px;
-      animation: drop 6s linear forwards;
-    }
-    @keyframes drop {
-      to { transform: translateY(110vh); }
-    }
+    /* Hiệu ứng quay text */
+    .spin-anim{animation:spinFlash .6s ease forwards}
+    @keyframes spinFlash{0%{transform:scale(0.9) rotate(-8deg);opacity:0.5}50%{transform:scale(1.2) rotate(8deg);opacity:1}100%{transform:scale(1) rotate(0)} }
   </style>
 </head>
 <body>
-  <div id="popup">
-    <h2>Cuối tuần này fen ăn cái dì âyyy, ăn Ngọc Ngân lun hong :))) 🤔</h2>
-    <div class="options">
-      <button class="option1" onclick="choose('🍲 Đi ăn đồ Hàn quán cũ')">🍲 Hàn quán cũ</button>
-      <button class="option2" onclick="choose('🤷 Đi ăn gì cũng được')">🤷 Tuỳ fen</button>
-      <button class="option3" onclick="choose('🍜 Đi ăn đồ Hàn quán mới')">🍜 Hàn quán mới</button>
+  <div class="particles" id="particles"></div>
+  <div class="wrap">
+    <header>
+      <div>
+        <h1>Fen quay ra thằng lỏ nào rou???</h1>
+        <p class="lead">Nhấn <strong>Quay</strong> để máy chọn ngẫu nhiên 1 cầu thủ trong box POTW.</p>
+      </div>
+      <div class="meta">
+        <div class="footer">Danh sách mặc định: <span class="count">11</span> cầu thủ</div>
+      </div>
+    </header>
+
+    <div class="main">
+      <div class="card">
+        <div class="display" id="display">—</div>
+
+        <div class="controls">
+          <button id="spinBtn">Quay</button>
+          <button class="secondary" id="stopBtn">Dừng sớm</button>
+          <button class="secondary" id="resetBtn">Reset</button>
+        </div>
+
+        <div class="footer">Gợi ý: nhấn <em>Quay</em> rồi chờ tới khi dừng; hoặc nhấn <em>Dừng sớm</em> để dừng tức thì.</div>
+      </div>
+
+      <aside class="card">
+        <h3 style="margin:0 0 10px">Danh sách cầu thủ</h3>
+        <div class="list" id="list"></div>
+        <div style="display:flex;gap:8px;margin-top:10px">
+          <input id="newName" placeholder="Thêm tên mới" style="flex:1;padding:8px;border-radius:8px;border:1px solid rgba(255,255,255,0.04);background:transparent;color:#e6eef6" />
+          <button id="addBtn" class="secondary">Thêm</button>
+        </div>
+        <div style="margin-top:10px;color:#9fb7cc;font-size:13px">Bấm vào tên trong danh sách để xóa cá nhân.</div>
+      </aside>
     </div>
   </div>
 
-  <div id="message"></div>
-
   <script>
-    function choose(option) {
-      const msg = document.getElementById("message");
-      msg.innerText = "Nhi chan chọn: " + option;
+    const players = [
+      'Si lỏ', 'Kevin', 'Retegui', 'Akanji', 'Depay', 'GK', 'Châu Bùi', 'R.James', 'Bủ nô CDM', 'Kem', 'Raum'
+    ];
 
-      document.body.style.animation = "shake 0.6s";
-      setTimeout(() => document.body.style.animation = "", 600);
+    const display = document.getElementById('display');
+    const listEl = document.getElementById('list');
+    const spinBtn = document.getElementById('spinBtn');
+    const stopBtn = document.getElementById('stopBtn');
+    const resetBtn = document.getElementById('resetBtn');
+    const newName = document.getElementById('newName');
+    const addBtn = document.getElementById('addBtn');
+    const countEl = document.querySelector('.count');
+    const particles = document.getElementById('particles');
 
-      for (let i = 0; i < 50; i++) {
-        const confetti = document.createElement("div");
-        confetti.className = "confetti";
-        confetti.style.left = Math.random() * 100 + "vw";
-        confetti.style.backgroundColor = ["#ffeb3b","#f44336","#4caf50","#2196f3","#9c27b0","#ff9800"][Math.floor(Math.random()*6)];
-        confetti.style.animationDuration = (2 + Math.random() * 3) + "s";
-        document.body.appendChild(confetti);
-        setTimeout(() => confetti.remove(), 4000);
+    let pool = [...players];
+    let interval = null;
+    let spinning = false;
+
+    function renderList(){
+      listEl.innerHTML = '';
+      pool.forEach((p, i)=>{
+        const el = document.createElement('div');
+        el.className = 'player';
+        el.innerHTML = `<strong>${p}</strong><small>#${i+1}</small>`;
+        el.title = 'Click để xóa';
+        el.onclick = ()=>{
+          if(confirm(`Xóa \"${p}\" khỏi danh sách?`)){
+            pool.splice(i,1);
+            renderList();
+            countEl.textContent = pool.length;
+          }
+        };
+        listEl.appendChild(el);
+      });
+    }
+
+    function spin(){
+      if(spinning || pool.length===0) return;
+      spinning = true;
+      spinBtn.disabled = true;
+      let ticks = 0;
+      const duration = 3000 + Math.random()*2500;
+      const start = Date.now();
+
+      interval = setInterval(()=>{
+        const elapsed = Date.now() - start;
+        const progress = elapsed / duration;
+        display.textContent = pool[Math.floor(Math.random()*pool.length)];
+        ticks++;
+
+        if(elapsed >= duration){
+          clearInterval(interval);
+          interval = null;
+          spinning = false;
+          spinBtn.disabled = false;
+          const winner = pool[Math.floor(Math.random()*pool.length)];
+          display.textContent = winner;
+          display.classList.add('spin-anim');
+          setTimeout(()=>display.classList.remove('spin-anim'),700);
+          burstParticles();
+        }
+      }, 80);
+    }
+
+    spinBtn.addEventListener('click', spin);
+
+    stopBtn.addEventListener('click', ()=>{
+      if(interval){
+        clearInterval(interval);
+        interval = null;
+        spinning = false;
+        spinBtn.disabled = false;
+        const winner = pool[Math.floor(Math.random()*pool.length)];
+        display.textContent = winner;
+        display.classList.add('spin-anim');
+        setTimeout(()=>display.classList.remove('spin-anim'),700);
+        burstParticles();
+      }
+    });
+
+    resetBtn.addEventListener('click', ()=>{
+      if(confirm('Reset về danh sách mặc định?')){
+        pool = [...players];
+        renderList();
+        countEl.textContent = pool.length;
+        display.textContent = '—';
+      }
+    });
+
+    addBtn.addEventListener('click', ()=>{
+      const v = newName.value.trim();
+      if(!v) return;
+      pool.push(v);
+      newName.value = '';
+      renderList();
+      countEl.textContent = pool.length;
+    });
+
+    newName.addEventListener('keyup',(e)=>{if(e.key==='Enter') addBtn.click();});
+
+    // particles random
+    function initParticles(){
+      for(let i=0;i<30;i++){
+        const dot = document.createElement('div');
+        dot.className='particle';
+        dot.style.left=Math.random()*100+'%';
+        dot.style.animationDuration=(6+Math.random()*6)+'s';
+        dot.style.opacity=Math.random();
+        particles.appendChild(dot);
       }
     }
 
-    // Emoji rain
-    const emojis = ["🍕","🍔","🍣","🍜","🥗","🌮","🍩","🍟","🍗","🥟"];
-    function createEmoji() {
-      const emoji = document.createElement("div");
-      emoji.className = "emoji";
-      emoji.innerText = emojis[Math.floor(Math.random() * emojis.length)];
-      emoji.style.left = Math.random() * 100 + "vw";
-      emoji.style.fontSize = (20 + Math.random() * 20) + "px";
-      emoji.style.animationDuration = (4 + Math.random() * 3) + "s";
-      document.body.appendChild(emoji);
-      setTimeout(() => emoji.remove(), 7000);
+    function burstParticles(){
+      for(let i=0;i<12;i++){
+        const dot=document.createElement('div');
+        dot.className='particle';
+        dot.style.left=(50+Math.random()*20-10)+'%';
+        dot.style.top='50%';
+        dot.style.width=dot.style.height='8px';
+        dot.style.background='#0ff';
+        dot.style.animation='burst 1s ease forwards';
+        particles.appendChild(dot);
+        setTimeout(()=>dot.remove(),1000);
+      }
     }
-    setInterval(createEmoji, 500);
+
+    const style = document.createElement('style');
+    style.textContent = `@keyframes burst{0%{transform:translate(0,0) scale(1);opacity:1}100%{transform:translate(${Math.random()*200-100}px, ${Math.random()*200-100}px) scale(0.3);opacity:0}}`;
+    document.head.appendChild(style);
+
+    renderList();
+    countEl.textContent = pool.length;
+    initParticles();
   </script>
 </body>
 </html>
