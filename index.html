@@ -1,216 +1,184 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="vi">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>POTW Spinner — Pes thủ</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>POTW PES</title>
   <style>
-    :root{--bg:#0f172a;--card:#0b1220;--accent:#06b6d4;--glass: rgba(255,255,255,0.04)}
-    *{box-sizing:border-box}
-    body{margin:0;min-height:100vh;display:flex;align-items:center;justify-content:center;background:linear-gradient(180deg,#071024 0%, #071129 60%);font-family:Inter,system-ui,Segoe UI,Roboto,'Helvetica Neue',Arial;overflow:hidden}
-    .wrap{width:920px;max-width:95%;padding:28px;background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));border-radius:14px;box-shadow:0 10px 30px rgba(2,6,23,0.6);color:#e6eef6;position:relative;z-index:2}
-    header{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px}
-    h1{font-size:20px;margin:0}
-    p.lead{margin:6px 0 0;color:#a7c1d6;font-size:13px}
-    .main{display:grid;grid-template-columns:1fr 360px;gap:18px;align-items:start}
-    @media (max-width:880px){.main{grid-template-columns:1fr}}
-    .card{background:var(--card);padding:18px;border-radius:12px;backdrop-filter:blur(6px);box-shadow:inset 0 1px 0 rgba(255,255,255,0.02)}
-    .display{height:210px;display:flex;align-items:center;justify-content:center;border-radius:10px;background:linear-gradient(180deg, rgba(6,182,212,0.06), rgba(6,182,212,0.02));font-weight:700;font-size:34px;position:relative;overflow:hidden}
-    .controls{display:flex;gap:12px;margin-top:14px}
-    button{cursor:pointer;padding:12px 16px;border-radius:10px;border:0;font-weight:700;background:var(--accent);color:#022;box-shadow:0 6px 18px rgba(6,182,212,0.08);transition:transform .14s ease, background .25s}
-    button.secondary{background:transparent;border:1px solid rgba(255,255,255,0.06);color:#dbeafe}
-    button:hover{background:#0fd9f2;color:#021}
-    button:active{transform:translateY(2px)}
-    .list{max-height:300px;overflow:auto;padding:12px;border-radius:8px;background:var(--glass);margin-top:12px}
-    .player{padding:8px 10px;border-radius:8px;margin-bottom:8px;background:linear-gradient(90deg, rgba(255,255,255,0.01), rgba(255,255,255,0.00));display:flex;justify-content:space-between;align-items:center;transition:background .25s}
-    .player:hover{background:rgba(255,255,255,0.06)}
-    .player strong{display:inline-block;min-width:0}
-    .player small{color:#8fbcd3}
-    .footer{font-size:13px;color:#9fb7cc;margin-top:10px}
-    .count{font-weight:800;color:var(--accent)}
-
-    /* Hiệu ứng nền */
-    .particles{position:absolute;top:0;left:0;width:100%;height:100%;overflow:hidden;z-index:1;}
-    .particle{position:absolute;width:6px;height:6px;background:var(--accent);border-radius:50%;opacity:.6;animation:float 8s linear infinite}
-    @keyframes float{0%{transform:translateY(100vh) scale(0.5)}100%{transform:translateY(-10vh) scale(1)}}
-
-    /* Hiệu ứng quay text */
-    .spin-anim{animation:spinFlash .6s ease forwards}
-    @keyframes spinFlash{0%{transform:scale(0.9) rotate(-8deg);opacity:0.5}50%{transform:scale(1.2) rotate(8deg);opacity:1}100%{transform:scale(1) rotate(0)} }
+    body {
+      font-family: Arial, sans-serif;
+      background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+      color: #fff;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      margin: 0;
+      overflow: hidden;
+    }
+    h1 {
+      margin-bottom: 25px;
+      text-shadow: 2px 2px 10px rgba(0,0,0,0.7);
+      font-size: 28px;
+      z-index: 2;
+    }
+    .options {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 15px;
+      z-index: 2;
+    }
+    .option {
+      background: rgba(255,255,255,0.1);
+      border: 2px solid #fff;
+      border-radius: 12px;
+      padding: 15px 25px;
+      cursor: pointer;
+      font-size: 18px;
+      transition: all 0.3s ease;
+      text-align: center;
+      backdrop-filter: blur(5px);
+    }
+    .option:hover {
+      background: rgba(255,255,255,0.3);
+      transform: scale(1.05);
+    }
+    .option.selected {
+      background: #4caf50;
+      border-color: #4caf50;
+      animation: pulse 0.6s ease;
+    }
+    @keyframes pulse {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.1); }
+      100% { transform: scale(1); }
+    }
+    .result {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%) scale(0);
+      font-size: 60px;
+      font-weight: bold;
+      color: #ffeb3b;
+      text-shadow: 3px 3px 15px rgba(0,0,0,0.8);
+      z-index: 3;
+      opacity: 0;
+      transition: all 0.5s ease;
+    }
+    .result.show {
+      transform: translate(-50%, -50%) scale(1);
+      opacity: 1;
+      animation: bounce 1s ease;
+    }
+    @keyframes bounce {
+      0% { transform: translate(-50%, -50%) scale(0); }
+      50% { transform: translate(-50%, -50%) scale(1.2); }
+      100% { transform: translate(-50%, -50%) scale(1); }
+    }
+    canvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      pointer-events: none;
+      z-index: 1;
+    }
   </style>
 </head>
 <body>
-  <div class="particles" id="particles"></div>
-  <div class="wrap">
-    <header>
-      <div>
-        <h1>Fen quay ra thằng lỏ nào rou???</h1>
-        <p class="lead">Nhấn <strong>Quay</strong> để máy chọn ngẫu nhiên 1 cầu thủ trong box POTW.</p>
-      </div>
-      <div class="meta">
-        <div class="footer">Danh sách mặc định: <span class="count">11</span> cầu thủ</div>
-      </div>
-    </header>
-
-    <div class="main">
-      <div class="card">
-        <div class="display" id="display">—</div>
-
-        <div class="controls">
-          <button id="spinBtn">Quay</button>
-          <button class="secondary" id="stopBtn">Dừng sớm</button>
-          <button class="secondary" id="resetBtn">Reset</button>
-        </div>
-
-        <div class="footer">Gợi ý: nhấn <em>Quay</em> rồi chờ tới khi dừng; hoặc nhấn <em>Dừng sớm</em> để dừng tức thì.</div>
-      </div>
-
-      <aside class="card">
-        <h3 style="margin:0 0 10px">Danh sách cầu thủ</h3>
-        <div class="list" id="list"></div>
-        <div style="display:flex;gap:8px;margin-top:10px">
-          <input id="newName" placeholder="Thêm tên mới" style="flex:1;padding:8px;border-radius:8px;border:1px solid rgba(255,255,255,0.04);background:transparent;color:#e6eef6" />
-          <button id="addBtn" class="secondary">Thêm</button>
-        </div>
-        <div style="margin-top:10px;color:#9fb7cc;font-size:13px">Bấm vào tên trong danh sách để xóa cá nhân.</div>
-      </aside>
-    </div>
+  <h1>Fen quay ra cầu thủ nào ở box POTW?</h1>
+  <div class="options">
+    <div class="option">Si lỏ</div>
+    <div class="option">Kevin</div>
+    <div class="option">Retegui</div>
+    <div class="option">Akanji</div>
+    <div class="option">Depay</div>
+    <div class="option">GK</div>
+    <div class="option">Châu Bùi</div>
+    <div class="option">R. James</div>
+    <div class="option">Bủ nô CDM</div>
+    <div class="option">Kem</div>
+    <div class="option">Raum</div>
   </div>
 
+  <div class="result" id="result"></div>
+  <canvas id="confetti"></canvas>
+
   <script>
-    const players = [
-      'Si lỏ', 'Kevin', 'Retegui', 'Akanji', 'Depay', 'GK', 'Châu Bùi', 'R.James', 'Bủ nô CDM', 'Kem', 'Raum'
-    ];
+    const options = document.querySelectorAll('.option');
+    const canvas = document.getElementById("confetti");
+    const ctx = canvas.getContext("2d");
+    const result = document.getElementById("result");
 
-    const display = document.getElementById('display');
-    const listEl = document.getElementById('list');
-    const spinBtn = document.getElementById('spinBtn');
-    const stopBtn = document.getElementById('stopBtn');
-    const resetBtn = document.getElementById('resetBtn');
-    const newName = document.getElementById('newName');
-    const addBtn = document.getElementById('addBtn');
-    const countEl = document.querySelector('.count');
-    const particles = document.getElementById('particles');
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
 
-    let pool = [...players];
-    let interval = null;
-    let spinning = false;
+    let particles = [];
 
-    function renderList(){
-      listEl.innerHTML = '';
-      pool.forEach((p, i)=>{
-        const el = document.createElement('div');
-        el.className = 'player';
-        el.innerHTML = `<strong>${p}</strong><small>#${i+1}</small>`;
-        el.title = 'Click để xóa';
-        el.onclick = ()=>{
-          if(confirm(`Xóa \"${p}\" khỏi danh sách?`)){
-            pool.splice(i,1);
-            renderList();
-            countEl.textContent = pool.length;
-          }
-        };
-        listEl.appendChild(el);
+    class Particle {
+      constructor(x, y, color) {
+        this.x = x;
+        this.y = y;
+        this.size = Math.random() * 6 + 4;
+        this.color = color;
+        this.speedX = (Math.random() - 0.5) * 6;
+        this.speedY = Math.random() * 4 + 2;
+        this.gravity = 0.2;
+      }
+      update() {
+        this.y += this.speedY;
+        this.x += this.speedX;
+        this.speedY += this.gravity;
+      }
+      draw() {
+        ctx.fillStyle = this.color;
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+        ctx.fill();
+      }
+    }
+
+    function createConfetti(x, y) {
+      const colors = ["#f44336","#e91e63","#9c27b0","#3f51b5","#2196f3","#4caf50","#ffeb3b","#ff9800"];
+      for (let i = 0; i < 100; i++) {
+        const color = colors[Math.floor(Math.random() * colors.length)];
+        particles.push(new Particle(x, y, color));
+      }
+    }
+
+    function handleParticles() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      for (let i = 0; i < particles.length; i++) {
+        particles[i].update();
+        particles[i].draw();
+      }
+      particles = particles.filter(p => p.y < canvas.height);
+      requestAnimationFrame(handleParticles);
+    }
+
+    handleParticles();
+
+    options.forEach(option => {
+      option.addEventListener('click', () => {
+        options.forEach(o => o.classList.remove('selected'));
+        option.classList.add('selected');
+        
+        // Hiện kết quả ở giữa màn hình
+        result.textContent = option.textContent;
+        result.classList.remove("show");
+        void result.offsetWidth; // reset animation trick
+        result.classList.add("show");
+
+        // Bắn confetti
+        createConfetti(window.innerWidth / 2, window.innerHeight / 2);
       });
-    }
-
-    function spin(){
-      if(spinning || pool.length===0) return;
-      spinning = true;
-      spinBtn.disabled = true;
-      let ticks = 0;
-      const duration = 3000 + Math.random()*2500;
-      const start = Date.now();
-
-      interval = setInterval(()=>{
-        const elapsed = Date.now() - start;
-        const progress = elapsed / duration;
-        display.textContent = pool[Math.floor(Math.random()*pool.length)];
-        ticks++;
-
-        if(elapsed >= duration){
-          clearInterval(interval);
-          interval = null;
-          spinning = false;
-          spinBtn.disabled = false;
-          const winner = pool[Math.floor(Math.random()*pool.length)];
-          display.textContent = winner;
-          display.classList.add('spin-anim');
-          setTimeout(()=>display.classList.remove('spin-anim'),700);
-          burstParticles();
-        }
-      }, 80);
-    }
-
-    spinBtn.addEventListener('click', spin);
-
-    stopBtn.addEventListener('click', ()=>{
-      if(interval){
-        clearInterval(interval);
-        interval = null;
-        spinning = false;
-        spinBtn.disabled = false;
-        const winner = pool[Math.floor(Math.random()*pool.length)];
-        display.textContent = winner;
-        display.classList.add('spin-anim');
-        setTimeout(()=>display.classList.remove('spin-anim'),700);
-        burstParticles();
-      }
     });
 
-    resetBtn.addEventListener('click', ()=>{
-      if(confirm('Reset về danh sách mặc định?')){
-        pool = [...players];
-        renderList();
-        countEl.textContent = pool.length;
-        display.textContent = '—';
-      }
+    window.addEventListener("resize", () => {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
     });
-
-    addBtn.addEventListener('click', ()=>{
-      const v = newName.value.trim();
-      if(!v) return;
-      pool.push(v);
-      newName.value = '';
-      renderList();
-      countEl.textContent = pool.length;
-    });
-
-    newName.addEventListener('keyup',(e)=>{if(e.key==='Enter') addBtn.click();});
-
-    // particles random
-    function initParticles(){
-      for(let i=0;i<30;i++){
-        const dot = document.createElement('div');
-        dot.className='particle';
-        dot.style.left=Math.random()*100+'%';
-        dot.style.animationDuration=(6+Math.random()*6)+'s';
-        dot.style.opacity=Math.random();
-        particles.appendChild(dot);
-      }
-    }
-
-    function burstParticles(){
-      for(let i=0;i<12;i++){
-        const dot=document.createElement('div');
-        dot.className='particle';
-        dot.style.left=(50+Math.random()*20-10)+'%';
-        dot.style.top='50%';
-        dot.style.width=dot.style.height='8px';
-        dot.style.background='#0ff';
-        dot.style.animation='burst 1s ease forwards';
-        particles.appendChild(dot);
-        setTimeout(()=>dot.remove(),1000);
-      }
-    }
-
-    const style = document.createElement('style');
-    style.textContent = `@keyframes burst{0%{transform:translate(0,0) scale(1);opacity:1}100%{transform:translate(${Math.random()*200-100}px, ${Math.random()*200-100}px) scale(0.3);opacity:0}}`;
-    document.head.appendChild(style);
-
-    renderList();
-    countEl.textContent = pool.length;
-    initParticles();
   </script>
 </body>
 </html>
